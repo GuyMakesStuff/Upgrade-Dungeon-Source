@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UpgradeDungeon.Managers;
 
-public class Obstacle : MonoBehaviour
+namespace UpgradeDungeon.Gameplay
 {
-    public string ObstacleTag;
-
-    void OnCollisionEnter2D(Collision2D other)
+    public class Obstacle : MonoBehaviour
     {
-        if(other.collider.tag == "Player")
+        public string ObstacleTag;
+
+        void OnCollisionEnter2D(Collision2D other)
         {
-            Player player = other.collider.GetComponent<Player>();
-            if(player.HasAbillity("Die To " + ObstacleTag))
+            if(other.collider.tag == "Player")
             {
-                GameManager.Instance.Kill();
+                Player player = other.collider.GetComponent<Player>();
+                if(player.HasAbillity("Die To " + ObstacleTag))
+                {
+                    GameManager.Instance.Kill();
+                }
             }
         }
     }

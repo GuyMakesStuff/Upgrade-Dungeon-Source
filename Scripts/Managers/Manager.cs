@@ -2,30 +2,33 @@ using System.Collections;
 using UpgradeDungeon.Audio;
 using UnityEngine;
 
-public class Manager<T> : MonoBehaviour
+namespace UpgradeDungeon.Managers
 {
-    public static T Instance { get; private set; }
-    public static bool IsInstanced
+    public class Manager<T> : MonoBehaviour
     {
-        get
+        public static T Instance { get; private set; }
+        public static bool IsInstanced
         {
-            return Instance != null;
+            get
+            {
+                return Instance != null;
+            }
         }
-    }
-    public bool IsGlobal;
+        public bool IsGlobal;
 
-    protected void Init(T OBJ)
-    {
-        Instance = OBJ;
-
-        if(IsGlobal)
+        protected void Init(T OBJ)
         {
-            DontDestroyOnLoad(gameObject);
-        }
-    }
+            Instance = OBJ;
 
-    public void PlaySelectSound()
-    {
-        AudioManager.Instance.InteractWithSFX("Select", SoundEffectBehaviour.Play);
+            if(IsGlobal)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
+        }
+
+        public void PlaySelectSound()
+        {
+            AudioManager.Instance.InteractWithSFX("Select", SoundEffectBehaviour.Play);
+        }
     }
 }

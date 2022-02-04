@@ -1,4 +1,5 @@
 using UpgradeDungeon.Audio;
+using UpgradeDungeon.Gameplay;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using UnityEngine;
@@ -72,14 +73,6 @@ namespace UpgradeDungeon.Managers
             if(CheckpointIndex >= 0)
             {
                 player.transform.position = Checkpoints[CheckpointIndex].transform.position;
-            }
-
-            foreach (BlackBlock BB in FindObjectsOfType<BlackBlock>())
-            {
-                if(BrokenBlocks.Contains(BB.gameObject.name))
-                {
-                    Destroy(BB.gameObject);
-                }
             }
         }
 

@@ -3,28 +3,31 @@ using UpgradeDungeon.Audio;
 using UnityEngine;
 using UpgradeDungeon.Managers;
 
-public class Checkpoint : MonoBehaviour
+namespace UpgradeDungeon.Gameplay
 {
-    public int Index;
-
-    void OnTriggerEnter2D(Collider2D other)
+    public class Checkpoint : MonoBehaviour
     {
-        if(other.tag == "Player")
+        public int Index;
+
+        void OnTriggerEnter2D(Collider2D other)
         {
-            if(GameManager.Instance.CheckpointIndex != Index)
+            if(other.tag == "Player")
             {
-                AudioManager.Instance.InteractWithSFX("Checkpoint", SoundEffectBehaviour.Play);
-                GameManager.Instance.CheckpointText.SetTrigger("Hit");
+                if(GameManager.Instance.CheckpointIndex != Index)
+                {
+                    AudioManager.Instance.InteractWithSFX("Checkpoint", SoundEffectBehaviour.Play);
+                    GameManager.Instance.CheckpointText.SetTrigger("Hit");
+                }
             }
         }
-    }
 
-    void OnTriggerStay2D(Collider2D other)
-    {
-        if(other.tag == "Player")
+        void OnTriggerStay2D(Collider2D other)
         {
-            GameManager.Instance.CheckpointIndex = Index;
-            GameManager.Instance.Save();
+            if(other.tag == "Player")
+            {
+                GameManager.Instance.CheckpointIndex = Index;
+                GameManager.Instance.Save();
+            }
         }
     }
 }

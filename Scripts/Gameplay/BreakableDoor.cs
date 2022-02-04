@@ -3,29 +3,23 @@ using UpgradeDungeon.Audio;
 using UnityEngine;
 using UpgradeDungeon.Managers;
 
-public class BreakableDoor : MonoBehaviour
+namespace UpgradeDungeon.Gameplay
 {
-    public GameObject BreakFX;
-
-    void Start()
+    public class BreakableDoor : Destructable
     {
-        if(GameManager.Instance.BrokenBlocks.Contains(gameObject.name))
-        {
-            Destroy(gameObject);
-        }
-    }
+        public GameObject BreakFX;
 
-    void OnCollisionEnter2D(Collision2D other)
-    {
-        if(other.collider.tag == "Player")
+        void OnCollisionEnter2D(Collision2D other)
         {
-            Player player = other.collider.GetComponent<Player>();
-            if(player.IsStorng)
+            if(other.collider.tag == "Player")
             {
-                GameManager.Instance.BrokenBlocks.Add(gameObject.name);
-                GameManager.Instance.SpawnFX(BreakFX, transform.position);
-                AudioManager.Instance.InteractWithSFX("Weak Break", SoundEffectBehaviour.Play);
-                Destroy(gameObject);
+                Player player = other.collider.GetComponent<Player>();
+                if(player.IsStorng)
+                {
+                    GameManager.Instance.SpawnFX(BreakFX, transform.position);
+                    AudioManager.Instance.InteractWithSFX("Weak Break", SoundEffectBehaviour.Play);
+                    Destruct();
+                }
             }
         }
     }

@@ -3,18 +3,20 @@ using UpgradeDungeon.Audio;
 using UnityEngine;
 using UpgradeDungeon.Managers;
 
-public class BlackBlock : MonoBehaviour
+namespace UpgradeDungeon.Gameplay
 {
-    public GameObject BreakFX;
-
-    void OnMouseOver()
+    public class BlackBlock : Destructable
     {
-        if(Player.RequestingClick)
+        public GameObject BreakFX;
+
+        void OnMouseOver()
         {
-            GameManager.Instance.BrokenBlocks.Add(gameObject.name);
-            GameManager.Instance.SpawnFX(BreakFX, transform.position);
-            AudioManager.Instance.InteractWithSFX("Black Break", SoundEffectBehaviour.Play);
-            Destroy(gameObject);
+            if(Player.RequestingClick)
+            {
+                GameManager.Instance.SpawnFX(BreakFX, transform.position);
+                AudioManager.Instance.InteractWithSFX("Black Break", SoundEffectBehaviour.Play);
+                Destruct();
+            }
         }
     }
 }

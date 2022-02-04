@@ -1,63 +1,67 @@
 using System.Collections;
+using UpgradeDungeon.Gameplay;
 using UpgradeDungeon.Audio;
 using UnityEngine;
 using TMPro;
 
-public class DialogManager : Manager<DialogManager>
+namespace UpgradeDungeon.Managers
 {
-    [Space]
-    public Animator DialogBox;
-    public TMP_Text DialogText;
-    public float CharDelay;
-    string CurSentence;
-    public static bool IsOpen;
-    bool IsTyping;
-
-    // Start is called before the first frame update
-    void Start()
+    public class DialogManager : Manager<DialogManager>
     {
-        Init(this);
-    }
+        [Space]
+        public Animator DialogBox;
+        public TMP_Text DialogText;
+        public float CharDelay;
+        string CurSentence;
+        public static bool IsOpen;
+        bool IsTyping;
 
-    // Update is called once per frame
-    void Update()
-    {
-        DialogBox.SetBool("IsOpen", IsOpen);
-
-        if(Player.RequestingDialogSkip && IsOpen)
+        // Start is called before the first frame update
+        void Start()
         {
-            if(IsTyping)
+            Init(this);
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            DialogBox.SetBool("IsOpen", IsOpen);
+
+            if(Player.RequestingDialogSkip && IsOpen)
             {
-                IsTyping = false;
-                StopAllCoroutines();
-                DialogText.text = CurSentence;
-                return;
+                if(IsTyping)
+                {
+                    IsTyping = false;
+                    StopAllCoroutines();
+                    DialogText.text = CurSentence;
+                    return;
+                }
+
+                IsOpen = false;
+                PlaySelectSound();
+                FindObjectOfType<Player>().SetFrezze(false);
             }
-
-            IsOpen = false;
-            PlaySelectSound();
-            FindObjectOfType<Player>().SetFrezze(false);
         }
-    }
 
-    public void ShowDialog(string Sentence)
-    {
-        IsOpen = true;
-        CurSentence = Sentence;
-        DialogText.text = "";
-        FindObjectOfType<Player>().SetFrezze(true);
-        StartCoroutine(TypeSentence());
-    }
-    IEnumerator TypeSentence()
-    {
-        IsTyping = true;
-        char[] Chars = CurSentence.ToCharArray();
-        foreach (char C in Chars)
+        public void ShowDialog(string Sentence)
         {
-            DialogText.text += C;
-            AudioManager.Instance.InteractWithSFX("Dialog", SoundEffectBehaviour.Play);
-            yield return new WaitForSeconds(CharDelay);
+            IsOpen = true;
+            CurSentence = Sentence;
+            DialogText.text = "";
+            FindObjectOfType<Player>().SetFrezze(true);
+            StartCoroutine(TypeSentence());
         }
-        IsTyping = false;
+        IEnumerator TypeSentence()
+        {
+            IsTyping = true;
+            char[] Chars = CurSentence.ToCharArray();
+            foreach (char C in Chars)
+            {
+                DialogText.text += C;
+                AudioManager.Instance.InteractWithSFX("Dialog", SoundEffectBehaviour.Play);
+                yield return new WaitForSeconds(CharDelay);
+            }
+            IsTyping = false;
+        }
     }
 }

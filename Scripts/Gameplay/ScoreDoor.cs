@@ -3,45 +3,48 @@ using UpgradeDungeon.Audio;
 using UnityEngine;
 using UpgradeDungeon.Managers;
 
-public class ScoreDoor : MonoBehaviour
+namespace UpgradeDungeon.Gameplay
 {
-    public int RequiredScore;
-    public float OpenSpeed;
-    bool IsOpen;
-    Vector3 StartPos;
-    Vector3 OpenPos;
-    float OpenPer;
-
-    void Start()
+    public class ScoreDoor : MonoBehaviour
     {
-        StartPos = transform.position;
-        OpenPos = StartPos + new Vector3(0f, transform.localScale.y * 2f, 0f);
-        IsOpen = (GameManager.Instance.Score >= RequiredScore);
-    }
+        public int RequiredScore;
+        public float OpenSpeed;
+        bool IsOpen;
+        Vector3 StartPos;
+        Vector3 OpenPos;
+        float OpenPer;
 
-    void Update()
-    {
-        if(IsOpen)
+        void Start()
         {
-            OpenPer += (1 / OpenSpeed) * Time.deltaTime;
+            StartPos = transform.position;
+            OpenPos = StartPos + new Vector3(0f, transform.localScale.y * 2f, 0f);
+            IsOpen = (GameManager.Instance.Score >= RequiredScore);
         }
-        OpenPer = Mathf.Clamp01(OpenPer);
 
-        transform.position = Vector3.Lerp(StartPos, OpenPos, OpenPer);
-    }
-
-    void OnCollisionEnter2D(Collision2D other)
-    {
-        if(other.collider.tag == "Player")
+        void Update()
         {
-            if(GameManager.Instance.Score >= RequiredScore)
+            if(IsOpen)
             {
-                IsOpen = true;
-                AudioManager.Instance.InteractWithSFX("Score Door Open", SoundEffectBehaviour.Play);
+                OpenPer += (1 / OpenSpeed) * Time.deltaTime;
             }
-            else
+            OpenPer = Mathf.Clamp01(OpenPer);
+
+            transform.position = Vector3.Lerp(StartPos, OpenPos, OpenPer);
+        }
+
+        void OnCollisionEnter2D(Collision2D other)
+        {
+            if(other.collider.tag == "Player")
             {
-                DialogManager.Instance.ShowDialog("You Need At Least " + RequiredScore.ToString() + " Score To Open This Door!");
+                if(GameManager.Instance.Score >= RequiredScore)
+                {
+                    IsOpen = true;
+                    AudioManager.Instance.InteractWithSFX("Score Door Open", SoundEffectBehaviour.Play);
+                }
+                else
+                {
+                    DialogManager.Instance.ShowDialog("You Need At Least " + RequiredScore.ToString() + " Score To Open This Door!");
+                }
             }
         }
     }
